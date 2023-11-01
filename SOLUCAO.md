@@ -7,7 +7,7 @@ Execute o script `docker_sqlserver_start.cmd` para subir um container
 Docker com um sqlserver.
 
 Ou, utilize o `(localdb)` caso tenha o sqlserver instalado na máquina. 
-Nesse caso, utilise a string de conexão:
+Nesse caso, utilize a string de conexão:
 
 ```json
 "ConnectionStrings": {
@@ -17,9 +17,8 @@ Nesse caso, utilise a string de conexão:
 
 ### Criando o banco de dados e a tabela de Tarefas
 
-Para criar os scripts de _Migrations_ para criar o banco de dados
-e a tabela e criar os objetos no servidor SQLServer, utilize o
-script `db_bootstra.cmd`.
+Para criar os scripts de _Migrations_ e criar os objetos no servidor SQLServer, 
+utilize o script `db_bootstra.cmd`.
 
 Esse script vai criar/atualizar a pasta `Migrations` com os arquivos
 .cs para a migração de dados e aplicá-los no servidor de banco de
@@ -121,7 +120,7 @@ curl --insecure -X PUT https://localhost:7295/Tarefa/3 -H "Content-Type:applicat
 
 ### DELETE /Tarefa/{id}
 
-Removendo registro de uma tarefa
+Removendo registro de uma tarefa.
 
 ```bash
 curl --insecure -X DELETE https://localhost:7295/Tarefa/1
