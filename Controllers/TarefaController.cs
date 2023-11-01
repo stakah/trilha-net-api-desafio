@@ -21,14 +21,37 @@ namespace TrilhaApiDesafio.Controllers
             // TODO: Buscar o Id no banco utilizando o EF
             // TODO: Validar o tipo de retorno. Se não encontrar a tarefa, retornar NotFound,
             // caso contrário retornar OK com a tarefa encontrada
-            return Ok();
+            try {
+                var tarefa = _context.Tarefas
+                    .Where(t => t.Id == id)
+                    .First();
+                    
+                return Ok(tarefa);
+            } catch (InvalidOperationException ex) {
+                if (ex.Message.ToLower().Equals("sequence contains no elements")) {
+                    return NotFound();
+                }
+
+                throw ex;
+            }
         }
 
         [HttpGet("ObterTodos")]
         public IActionResult ObterTodos()
         {
             // TODO: Buscar todas as tarefas no banco utilizando o EF
-            return Ok();
+            try {
+                var tarefas = _context.Tarefas
+                  .OrderBy(id => id);
+
+                return Ok(tarefas);
+            } catch (InvalidOperationException ex) {
+                if (ex.Message.ToLower().Equals("sequence contains no elements")) {
+                    return NotFound();
+                }
+
+                throw ex;
+            }
         }
 
         [HttpGet("ObterPorTitulo")]
@@ -36,7 +59,19 @@ namespace TrilhaApiDesafio.Controllers
         {
             // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o titulo recebido por parâmetro
             // Dica: Usar como exemplo o endpoint ObterPorData
-            return Ok();
+            try {
+                var tarefa = _context.Tarefas
+                .Where(t => t.Titulo.ToLower().Contains(titulo.ToLower()))
+                    .OrderBy(id => id);
+                    
+                return Ok(tarefa);
+            } catch (InvalidOperationException ex) {
+                if (ex.Message.ToLower().Equals("sequence contains no elements")) {
+                    return NotFound();
+                }
+
+                throw ex;
+            }
         }
 
         [HttpGet("ObterPorData")]
@@ -62,6 +97,10 @@ namespace TrilhaApiDesafio.Controllers
                 return BadRequest(new { Erro = "A data da tarefa não pode ser vazia" });
 
             // TODO: Adicionar a tarefa recebida no EF e salvar as mudanças (save changes)
+            var op = _context.Tarefas
+                .Add(tarefa);
+            _context.SaveChanges();
+
             return CreatedAtAction(nameof(ObterPorId), new { id = tarefa.Id }, tarefa);
         }
 
@@ -77,7 +116,12 @@ namespace TrilhaApiDesafio.Controllers
                 return BadRequest(new { Erro = "A data da tarefa não pode ser vazia" });
 
             // TODO: Atualizar as informações da variável tarefaBanco com a tarefa recebida via parâmetro
+            tarefa.Id = id;
+
             // TODO: Atualizar a variável tarefaBanco no EF e salvar as mudanças (save changes)
+            _context.Entry(tarefaBanco).CurrentValues.SetValues(tarefa);
+            _context.SaveChanges();
+
             return Ok();
         }
 
@@ -90,6 +134,9 @@ namespace TrilhaApiDesafio.Controllers
                 return NotFound();
 
             // TODO: Remover a tarefa encontrada através do EF e salvar as mudanças (save changes)
+            _context.Remove(tarefaBanco);
+            _context.SaveChanges();
+            
             return NoContent();
         }
     }
